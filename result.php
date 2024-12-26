@@ -3,7 +3,9 @@ include('function.php');
 
 // Ambil data JSON untuk training
 $filePath = 'C:\\xampp_7\\htdocs\\NaiveBayes\\training.json'; 
+$testPath = 'C:\\xampp_7\\htdocs\\NaiveBayes\\testing.json'; 
 $data = ambilDataJSON($filePath);
+$dataTest = ambilDataJSON($testPath);
 
 // Variabel untuk menampung hasil
 $prediksi = '';
@@ -12,6 +14,7 @@ $posteriorTidak = 0;
 $atributValues = [];
 $presentasiYa = 0;
 $presentasiTidak = 0;
+$i = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil nilai atribut dari form
@@ -78,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="alert alert-danger">
+                    <div class="alert alert-warning">
                     <h4>Persentase Tebakan:</h4>
                     <p><strong>Tidak: </strong> <?= $presentasiTidak ?>%</p>
                     </div>
@@ -102,12 +105,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <a href="index.php" class="btn btn-primary btn-md">Kembali</a>
 
             <!-- Tampilkan semua data training yang digunakan -->
-            <h5>Data Training:</h5>
+            <h5 class="mt-5">Data Testing:</h5>
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Umur</th>
                         <th>Jenis Kelamin</th>
                         <th>Kelas</th>
@@ -118,8 +123,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($data as $row): ?>
+                    <?php foreach ($dataTest as $row): ?>
+                        <?php $i++ ;?>
                         <tr>
+                            <td><?= $i ?></td>
                             <td><?= $row['Umur'] ?></td>
                             <td><?= $row['Jenis Kelamin'] ?></td>
                             <td><?= $row['Kelas'] ?></td>
