@@ -5,7 +5,7 @@ $datas = ambilDataJSON($filePath);
 ?>
 
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" data-bs-theme="dark">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,9 +28,9 @@ $datas = ambilDataJSON($filePath);
 <body>
 	<div class="table-responsive small">
     <div class="container">
-      <div class="row">
-        <div class="col-md-8 ">
-          <h3>Data Training</h3>
+      <div class="row pt-5">
+        <div class="col-md-12 text-center">
+          <h3 class="mt-5 fw-bold fs-1">Data Training</h3>
           <div class="table-container">
             <table class="table table-striped table-sm mb-0">
                 <thead class="table-dark">
@@ -64,8 +64,14 @@ $datas = ambilDataJSON($filePath);
           </div>
         </div>
         <div class="col-md-4 mt-5 text-center">
-          <h1 class="fw-bold mt-5">Total Data</h1>
-          <h3 class="fw-bold mt-3"><?= $i;?></h3>
+            <div class="card">
+              <h5 class="card-header">Total Data</h5>
+              <div class="card-body">
+                <h5 class="card-title fs-2"><?= $i;?></h5>
+                <p class="card-text">banyaknya data training yang digunakan untuk program</p>
+                <a href="./rincian.php" class="btn btn-primary">Lihat Rincian data</a>
+              </div>
+            </div>
         </div>
         <body>
         <div class="container mt-5">
