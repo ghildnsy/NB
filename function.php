@@ -68,19 +68,18 @@ function hitungPosterior($data, $fitur_data) {
         $likelihood_tidak *= hitungLikelihood($data, $fitur, [$nilai], 'Tidak');
     }
 
-    $posterior_ya = $likelihood_ya;
-    $posterior_tidak = $likelihood_tidak;
+    $posterior = [
+        'Ya' => $likelihood_ya,
+        'Tidak' => $likelihood_tidak
+    ];
 
-    if ($posterior_ya > $posterior_tidak) {
-        return 'Ya';
-    } else {
-        return 'Tidak';
-    }
+    return $posterior;
 }
 
-function prediksiAksesInternet($data, $fitur_data) {
-    return hitungPosterior($data, $fitur_data);
+function prediksiAksesInternet($posterior) {
+    return $posterior['Ya'] > $posterior['Tidak'] ? 'Ya' : 'Tidak';
 }
+
 
 ?>
 

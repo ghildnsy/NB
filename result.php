@@ -1,5 +1,4 @@
 <?php
-// Pastikan fungsi hitungPosterior sudah didefinisikan di function.php dan di-include di sini
 include('function.php');
 
 // Ambil data JSON untuk training
@@ -8,8 +7,11 @@ $data = ambilDataJSON($filePath);
 
 // Variabel untuk menampung hasil
 $prediksi = '';
-$posterior = '';
+$posteriorYa = 0;
+$posteriorTidak = 0;
 $atributValues = [];
+$presentasiYa = 0;
+$presentasiTidak = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil nilai atribut dari form
@@ -33,8 +35,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Hitung posterior probability berdasarkan atribut
     $posterior = hitungPosterior($data, $atributValues);
 
-    // Prediksi Akses Internet berdasarkan inputan
-    $prediksi = prediksiAksesInternet($data, $atributValues);
+    // Simpan nilai posterior "Ya" dan "Tidak"
+    $posteriorYa = isset($posterior['Ya']) ? $posterior['Ya'] : 0;
+    $posteriorTidak = isset($posterior['Tidak']) ? $posterior['Tidak'] : 0;
+
+    // Hitung persentase tebakan "Ya" dan "Tidak"
+    $totalPosterior = $posteriorYa + $posteriorTidak;
+    if ($totalPosterior > 0) {
+        $presentasiYa = round(($posteriorYa / $totalPosterior) * 100, 2);
+        $presentasiTidak = round(($posteriorTidak / $totalPosterior) * 100, 2);
+    }
+
+    // Prediksi Akses Internet berdasarkan nilai posterior
+    $prediksi = $posteriorYa > $posteriorTidak ? 'Ya' : 'Tidak';
 }
 ?>
 
@@ -44,14 +57,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediksi Akses Internet</title>
-    <!-- Link ke Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body data-bs-theme="dark">
     <div class="container mt-5">
         <h1 class="text-center mb-4">Prediksi Akses Internet Berdasarkan Data Pengguna</h1>
-        
-        <!-- Form inputan pengguna sudah ada sebelumnya, sekarang fokus pada hasil -->
         
         <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
             <!-- Tampilkan hasil prediksi -->
@@ -59,13 +69,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h4>Hasil Prediksi:</h4>
                 <p><strong>Akses Internet: </strong> <?= $prediksi ?></p>
             </div>
-            
-            <!-- Tampilkan hasil perhitungan posterior -->
-            <div class="alert alert-secondary">
-                <h4>Posterior Probability:</h4>
-                <pre><?= print_r($posterior, true); ?></pre>
+            <!-- Tampilkan persentase tebakan -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="alert alert-success">
+                    <h4>Persentase Tebakan:</h4>
+                    <p><strong>Ya: </strong> <?= $presentasiYa ?>%</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-danger">
+                    <h4>Persentase Tebakan:</h4>
+                    <p><strong>Tidak: </strong> <?= $presentasiTidak ?>%</p>
+                    </div>
+                </div>
             </div>
-
             <!-- Tampilkan inputan pengguna -->
             <h5>Data yang Dimasukkan:</h5>
             <table class="table table-bordered">
@@ -116,7 +134,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
     </div>
 
-    <!-- Link ke JS Bootstrap 5 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
